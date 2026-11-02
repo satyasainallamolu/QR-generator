@@ -1,0 +1,372 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>QR Code Studio</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 25px 15px;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #090d1c, #21134b, #103b65);
+    color: white;
+}
+
+.container {
+    width: 100%;
+    max-width: 480px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.logo {
+    width: 65px;
+    height: 65px;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 15px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #a855f7, #3b82f6);
+    font-size: 36px;
+}
+
+h1 {
+    color: white;
+    font-size: 30px;
+    font-weight: 800;
+}
+
+h1 span {
+    color: #a78bfa;
+}
+
+header p {
+    color: #c0c9df;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.card {
+    width: 100%;
+    padding: 30px;
+    background: #1b2340;
+    border: 1px solid #394766;
+    border-radius: 25px;
+    box-shadow: 0 20px 60px #0008;
+}
+
+label {
+    display: block;
+    margin-bottom: 12px;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+textarea {
+    display: block;
+    width: 100%;
+    height: 110px;
+    padding: 15px;
+    background: #10182c;
+    color: white;
+    border: 1px solid #536181;
+    border-radius: 12px;
+    outline: none;
+    resize: vertical;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+}
+
+textarea:focus {
+    border-color: #a78bfa;
+}
+
+textarea::placeholder {
+    color: #9ba8c2;
+}
+
+.actions, .download-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+button {
+    padding: 14px 12px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #9333ea, #4361ee);
+    color: white;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover:not(:disabled) {
+    transform: translateY(-3px);
+    filter: brightness(1.15);
+}
+
+button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+#generateBtn {
+    flex: 1;
+}
+
+.clear, .copy {
+    background: #394663;
+}
+
+.result {
+    margin-top: 30px;
+    padding-top: 25px;
+    border-top: 1px solid #394766;
+    text-align: center;
+}
+
+.result h3 {
+    color: white;
+    margin-bottom: 18px;
+}
+
+.qr-box {
+    min-height: 240px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background: white;
+    border-radius: 16px;
+}
+
+.qr-box img, .qr-box canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+.placeholder {
+    color: #536078;
+    text-align: center;
+}
+
+.placeholder span {
+    font-size: 55px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.placeholder p {
+    font-size: 13px;
+}
+
+.download-actions button {
+    flex: 1;
+}
+
+#message {
+    color: #bdc9e2;
+    font-size: 12px;
+    margin-top: 18px;
+    text-align: center;
+}
+
+footer {
+    text-align: center;
+    margin-top: 25px;
+    color: #a4b0cb;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+}
+
+@media(max-width: 400px) {
+    .card {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 25px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <header>
+        <div class="logo">▦</div>
+        <h1>QR Code <span>Studio</span></h1>
+        <p>Create your own QR codes in seconds.</p>
+    </header>
+
+    <section class="card">
+
+        <label for="qrInput">
+            Enter your text or website URL
+        </label>
+
+        <textarea id="qrInput"
+        placeholder="https://example.com"></textarea>
+
+        <div class="actions">
+            <button id="generateBtn">Generate QR Code ↗</button>
+            <button class="clear" id="clearBtn">Clear</button>
+        </div>
+
+        <div class="result">
+
+            <h3>Your QR Code</h3>
+
+            <div class="qr-box" id="qrBox">
+                <div class="placeholder">
+                    <span>▦</span>
+                    <p>Your QR code will appear here</p>
+                </div>
+            </div>
+
+            <div class="download-actions">
+                <button id="downloadBtn" disabled>
+                    ↓ Download PNG
+                </button>
+
+                <button class="copy" id="copyBtn">
+                    Copy Text
+                </button>
+            </div>
+
+            <p id="message">Ready to create your QR code</p>
+
+        </div>
+    </section>
+
+    <footer>
+        QR CODE STUDIO · SIMPLE · FAST · FREE
+    </footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<script>
+const input = document.getElementById("qrInput");
+const qrBox = document.getElementById("qrBox");
+const message = document.getElementById("message");
+
+const generateBtn = document.getElementById("generateBtn");
+const clearBtn = document.getElementById("clearBtn");
+const downloadBtn = document.getElementById("downloadBtn");
+const copyBtn = document.getElementById("copyBtn");
+
+let generated = false;
+
+generateBtn.addEventListener("click", function() {
+
+    const text = input.value.trim();
+
+    if (!text) {
+        message.textContent = "Please enter some text!";
+        return;
+    }
+
+    if (typeof QRCode === "undefined") {
+        message.textContent = "Internet required to load QR library.";
+        return;
+    }
+
+    qrBox.innerHTML = "";
+
+    new QRCode(qrBox, {
+        text: text,
+        width: 200,
+        height: 200,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+    });
+
+    generated = true;
+    downloadBtn.disabled = false;
+
+    message.textContent = "QR code generated successfully!";
+});
+
+clearBtn.addEventListener("click", function() {
+
+    input.value = "";
+
+    qrBox.innerHTML = `
+        <div class="placeholder">
+            <span>▦</span>
+            <p>Your QR code will appear here</p>
+        </div>
+    `;
+
+    generated = false;
+    downloadBtn.disabled = true;
+
+    message.textContent = "Ready to create your QR code";
+});
+
+downloadBtn.addEventListener("click", function() {
+
+    if (!generated) return;
+
+    const canvas = qrBox.querySelector("canvas");
+
+    if (!canvas) {
+        message.textContent = "QR code is not ready yet.";
+        return;
+    }
+
+    const link = document.createElement("a");
+
+    link.href = canvas.toDataURL("image/png");
+    link.download = "My_QR_Code.png";
+
+    link.click();
+
+    message.textContent = "QR code downloaded!";
+});
+
+copyBtn.addEventListener("click", async function() {
+
+    const text = input.value.trim();
+
+    if (!text) {
+        message.textContent = "Enter text to copy!";
+        return;
+    }
+
+    try {
+        await navigator.clipboard.writeText(text);
+        message.textContent = "Text copied successfully!";
+    } catch {
+        message.textContent = "Copy unavailable. Copy manually.";
+    }
+});
+</script>
+
+</body>
+</html>
